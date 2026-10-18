@@ -1,0 +1,390 @@
+@startuml Class Diagram - Sistem Penyewaan Alat Berat (Detailed)
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam class {
+    BackgroundColor #E8F4FD
+    BorderColor #2196F3
+    FontColor #000000
+}
+skinparam interface {
+    BackgroundColor #FFF3E0
+    BorderColor #FF9800
+    FontColor #000000
+}
+skinparam package {
+    BackgroundColor #F3E5F5
+    BorderColor #9C27B0
+    FontColor #000000
+}
+
+title Class Diagram - Sistem Penyewaan Alat Berat (Detailed View)
+
+package "App\\Controllers" {
+    abstract class BaseController {
+        # $request: RequestInterface
+        # $helpers: array
+        + initController(request: RequestInterface, response: ResponseInterface, logger: LoggerInterface): void
+    }
+
+    class Home {
+        - $alatBeratModel: AlatBeratModel
+        + __construct(): void
+        + index(): ResponseInterface
+        + kontak(): ResponseInterface
+        + tentang(): ResponseInterface
+    }
+
+    class Auth {
+        + register(): ResponseInterface
+        + registerProcess(): ResponseInterface
+        + login(): ResponseInterface
+        + loginProcess(): ResponseInterface
+        + loginAdmin(): ResponseInterface
+        + loginAdminProcess(): ResponseInterface
+        + loginUser(): ResponseInterface
+        + loginUserProcess(): ResponseInterface
+        + logout(): ResponseInterface
+        + lupaPassword(): ResponseInterface
+    }
+
+    class Admin {
+        + index(): ResponseInterface
+        + users(): ResponseInterface
+        + tambahUser(): ResponseInterface
+        + simpanUser(): ResponseInterface
+        + editUser(id: int): ResponseInterface
+        + updateUser(id: int): ResponseInterface
+        + hapusUser(id: int): ResponseInterface
+        + alatBerat(): ResponseInterface
+        + tambahAlatBerat(): ResponseInterface
+        + simpanAlatBerat(): ResponseInterface
+        + editAlatBerat(id: int): ResponseInterface
+        + updateAlatBerat(id: int): ResponseInterface
+        + hapusAlatBerat(id: int): ResponseInterface
+        + uploadGambarAlatBerat(id: int): ResponseInterface
+        + hapusGambarAlatBerat(gambar_id: int): ResponseInterface
+        + pengaturan(): ResponseInterface
+        + updateHero(): ResponseInterface
+        + uploadFotoProfil(): ResponseInterface
+        + uploadFotoHeader(): ResponseInterface
+        + kelolaKuotasi(): ResponseInterface
+        + hapusKuotasi(id: int): ResponseInterface
+        + updateStatusKuotasi(id: int): ResponseInterface
+        + hapusSemuaKuotasi(): ResponseInterface
+        + hapusSemuaAlatBerat(): ResponseInterface
+    }
+
+    class AlatBerat {
+        - $alatBeratModel: AlatBeratModel
+        + __construct(): void
+        + index(): ResponseInterface
+        + create(): ResponseInterface
+        + store(): ResponseInterface
+        + detail(id: int): ResponseInterface
+        + excavator(): ResponseInterface
+        + vibroRoller(): ResponseInterface
+        + dozer(): ResponseInterface
+        + motorGrader(): ResponseInterface
+        + wheelLoader(): ResponseInterface
+        + backhoeLoader(): ResponseInterface
+        + dumpTruck(): ResponseInterface
+        + dumpTruckFuso(): ResponseInterface
+        + mintaKuotasi(): ResponseInterface
+        + mintaKuotasiForm(id: int): ResponseInterface
+        + riwayatKuotasi(): ResponseInterface
+        + hapusRiwayatKuotasi(id: int): ResponseInterface
+        + ajukanUlangKuotasi(id: int): ResponseInterface
+    }
+
+    class Profile {
+        + index(): ResponseInterface
+        + update(): ResponseInterface
+        + notifikasi(): ResponseInterface
+        + bacaNotifikasi(id: int): ResponseInterface
+        + hapusNotifikasi(id: int): ResponseInterface
+        + hapusSemuaNotifikasi(): ResponseInterface
+    }
+
+    class Sewa {
+        + index(): ResponseInterface
+        + proses(): ResponseInterface
+    }
+}
+
+package "App\\Models" {
+    class UserModel {
+        - $table: string = 'users'
+        - $primaryKey: string = 'id'
+        - $useAutoIncrement: bool = true
+        - $returnType: string = 'array'
+        - $allowedFields: array
+        - $useTimestamps: bool = true
+        - $createdField: string = 'created_at'
+        - $updatedField: string = 'updated_at'
+        + find(id: int): array
+        + findAll(): array
+        + save(data: array): bool
+        + update(id: int, data: array): bool
+        + delete(id: int): bool
+        + where(field: string, value: mixed): UserModel
+        + countAllResults(): int
+    }
+
+    class AlatBeratModel {
+        - $table: string = 'alat_berat'
+        - $primaryKey: string = 'id'
+        - $useAutoIncrement: bool = true
+        - $returnType: string = 'array'
+        - $allowedFields: array
+        - $useTimestamps: bool = true
+        - $createdField: string = 'created_at'
+        - $updatedField: string = 'updated_at'
+        - $validationRules: array
+        - $validationMessages: array
+        + find(id: int): array
+        + findAll(): array
+        + save(data: array): bool
+        + update(id: int, data: array): bool
+        + delete(id: int): bool
+        + where(field: string, value: mixed): AlatBeratModel
+        + whereIn(field: string, values: array): AlatBeratModel
+        + like(field: string, value: string): AlatBeratModel
+        + orLike(field: string, value: string): AlatBeratModel
+        + groupStart(): AlatBeratModel
+        + groupEnd(): AlatBeratModel
+        + orderBy(field: string, direction: string): AlatBeratModel
+        + select(fields: string): AlatBeratModel
+        + distinct(): AlatBeratModel
+        + countAllResults(): int
+    }
+
+    class AlatBeratGambarModel {
+        - $table: string = 'alat_berat_gambar'
+        - $primaryKey: string = 'id'
+        - $allowedFields: array
+        - $useTimestamps: bool = true
+        + find(id: int): array
+        + findAll(): array
+        + save(data: array): bool
+        + update(id: int, data: array): bool
+        + delete(id: int): bool
+        + where(field: string, value: mixed): AlatBeratGambarModel
+        + getByAlatBerat(alat_berat_id: int): array
+    }
+
+    class RiwayatKuotasiModel {
+        - $table: string = 'riwayat_kuotasi'
+        - $primaryKey: string = 'id'
+        - $allowedFields: array
+        - $useTimestamps: bool = true
+        - $createdField: string = 'created_at'
+        - $updatedField: string = 'updated_at'
+        + find(id: int): array
+        + findAll(): array
+        + save(data: array): bool
+        + update(id: int, data: array): bool
+        + delete(id: int): bool
+        + where(field: string, value: mixed): RiwayatKuotasiModel
+        + orderBy(field: string, direction: string): RiwayatKuotasiModel
+        + truncate(): bool
+    }
+
+    class NotifikasiModel {
+        - $table: string = 'notifikasi'
+        - $primaryKey: string = 'id'
+        - $allowedFields: array
+        - $useTimestamps: bool = true
+        + find(id: int): array
+        + findAll(): array
+        + save(data: array): bool
+        + update(id: int, data: array): bool
+        + delete(id: int): bool
+        + where(field: string, value: mixed): NotifikasiModel
+        + orderBy(field: string, direction: string): NotifikasiModel
+    }
+}
+
+package "Database Tables" {
+    class users {
+        + id: int (PK, AI)
+        + name: varchar(255)
+        + email: varchar(255) (UNIQUE)
+        + password: varchar(255)
+        + role: enum('user', 'admin')
+        + phone: varchar(20)
+        + address: text
+        + created_at: timestamp
+        + updated_at: timestamp
+    }
+
+    class alat_berat {
+        + id: int (PK, AI)
+        + nama: varchar(255)
+        + tipe: varchar(100)
+        + jenis: varchar(100)
+        + kapasitas: decimal(10,2)
+        + status: enum('tersedia', 'dipinjam', 'rusak')
+        + deskripsi: text
+        + gambar: varchar(255)
+        + harga_sewa: decimal(15,2)
+        + operator: varchar(100)
+        + berat_operasional: decimal(10,2)
+        + kapasitas_bucket: decimal(10,2)
+        + kedalaman_gali_maksimum: decimal(10,2)
+        + tinggi_transportasi: decimal(10,2)
+        + panjang_transportasi: decimal(10,2)
+        + lebar_transportasi: decimal(10,2)
+        + merek: varchar(100)
+        + kategori: varchar(100)
+        + created_at: timestamp
+        + updated_at: timestamp
+    }
+
+    class alat_berat_gambar {
+        + id: int (PK, AI)
+        + alat_berat_id: int (FK -> alat_berat.id)
+        + filename: varchar(255)
+        + created_at: timestamp
+        + updated_at: timestamp
+    }
+
+    class riwayat_kuotasi {
+        + id: int (PK, AI)
+        + user_id: int (FK -> users.id, NULL)
+        + nama_pengunjung: varchar(255)
+        + email_pengunjung: varchar(255)
+        + telepon_pengunjung: varchar(20)
+        + alamat_pengiriman: text
+        + alat_berat_id: int (FK -> alat_berat.id)
+        + tanggal_minta: datetime
+        + status: enum('pending', 'diterima', 'ditolak')
+        + harga_ditawarkan: decimal(15,2)
+        + catatan: text
+        + pesan_admin: text
+        + jumlah_ajukan_ulang: int (DEFAULT 0)
+        + created_at: timestamp
+        + updated_at: timestamp
+    }
+
+    class notifikasi {
+        + id: int (PK, AI)
+        + user_id: int (FK -> users.id)
+        + pesan: text
+        + link: varchar(255)
+        + tipe: varchar(50)
+        + is_read: tinyint(1) (DEFAULT 0)
+        + created_at: timestamp
+        + updated_at: timestamp
+    }
+}
+
+' Inheritance relationships
+BaseController <|-- Home
+BaseController <|-- Auth
+BaseController <|-- Admin
+BaseController <|-- AlatBerat
+BaseController <|-- Profile
+BaseController <|-- Sewa
+
+' Model to Database mapping
+UserModel ||--o{ users : "maps to"
+AlatBeratModel ||--o{ alat_berat : "maps to"
+AlatBeratGambarModel ||--o{ alat_berat_gambar : "maps to"
+RiwayatKuotasiModel ||--o{ riwayat_kuotasi : "maps to"
+NotifikasiModel ||--o{ notifikasi : "maps to"
+
+' Database relationships
+users ||--o{ riwayat_kuotasi : "1 user can have many kuotasi"
+users ||--o{ notifikasi : "1 user can have many notifications"
+alat_berat ||--o{ alat_berat_gambar : "1 alat berat can have many images"
+alat_berat ||--o{ riwayat_kuotasi : "1 alat berat can have many kuotasi"
+
+' Controller dependencies
+Home --> AlatBeratModel : "uses"
+Auth --> UserModel : "uses"
+Admin --> UserModel : "uses"
+Admin --> AlatBeratModel : "uses"
+Admin --> RiwayatKuotasiModel : "uses"
+Admin --> AlatBeratGambarModel : "uses"
+Admin --> NotifikasiModel : "uses"
+AlatBerat --> AlatBeratModel : "uses"
+AlatBerat --> AlatBeratGambarModel : "uses"
+AlatBerat --> RiwayatKuotasiModel : "uses"
+AlatBerat --> UserModel : "uses"
+AlatBerat --> NotifikasiModel : "uses"
+Profile --> UserModel : "uses"
+Profile --> NotifikasiModel : "uses"
+
+' Notes for important components
+note right of AlatBeratModel
+    **Core Model for Equipment Management**
+    
+    - Handles CRUD operations for heavy equipment
+    - Includes validation rules for data integrity
+    - Supports file upload management
+    - Provides search and filtering capabilities
+    - Manages equipment status and specifications
+end note
+
+note right of RiwayatKuotasiModel
+    **Quotation Management System**
+    
+    - Tracks quotation requests from users
+    - Manages status updates (pending/diterima/ditolak)
+    - Handles admin messages and user notes
+    - Supports quotation resubmission (max 3 times)
+    - Links users and equipment data
+end note
+
+note right of Admin
+    **Administrative Controller**
+    
+    - Full CRUD operations for all entities
+    - User management with role-based access
+    - Equipment management with image handling
+    - Quotation approval workflow
+    - System configuration management
+    - File upload and management
+end note
+
+note right of Auth
+    **Authentication & Authorization**
+    
+    - User registration and login
+    - Role-based access control (user/admin)
+    - Session management
+    - Password hashing and validation
+    - Separate login flows for admin/user
+end note
+
+note right of AlatBerat
+    **Equipment Display & Quotation**
+    
+    - Equipment catalog with filtering
+    - Category-based equipment views
+    - Equipment detail pages
+    - Quotation request handling
+    - User quotation history
+    - Image gallery management
+end note
+
+note bottom of users
+    **User Management**
+    
+    - Supports both registered users and visitors
+    - Role-based permissions (user/admin)
+    - Contact information storage
+    - Session-based authentication
+end note
+
+note bottom of alat_berat
+    **Equipment Data**
+    
+    - Comprehensive equipment specifications
+    - Multiple equipment categories
+    - Status tracking (available/rented/damaged)
+    - Pricing information
+    - Technical specifications
+end note
+
+@enduml 

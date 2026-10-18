@@ -1,0 +1,233 @@
+@startuml Class Diagram - Sistem Penyewaan Alat Berat (Simple)
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam class {
+    BackgroundColor #E8F4FD
+    BorderColor #2196F3
+    FontColor #000000
+    FontSize 11
+}
+skinparam package {
+    BackgroundColor #F3E5F5
+    BorderColor #9C27B0
+    FontColor #000000
+}
+skinparam database {
+    BackgroundColor #E8F5E8
+    BorderColor #4CAF50
+    FontColor #000000
+}
+
+title Class Diagram - Sistem Penyewaan Alat Berat Edi Jaya Jambi
+
+package "Controllers" {
+    abstract class BaseController {
+        # $request: RequestInterface
+        # $helpers: array
+        + initController(): void
+    }
+
+    class Home {
+        - $alatBeratModel: AlatBeratModel
+        + index(): ResponseInterface
+        + kontak(): ResponseInterface
+        + tentang(): ResponseInterface
+    }
+
+    class Auth {
+        + register(): ResponseInterface
+        + loginProcess(): ResponseInterface
+        + loginAdmin(): ResponseInterface
+        + loginUser(): ResponseInterface
+        + logout(): ResponseInterface
+        + lupaPassword(): ResponseInterface
+    }
+
+    class Admin {
+        + index(): ResponseInterface
+        + users(): ResponseInterface
+        + alatBerat(): ResponseInterface
+        + tambahAlatBerat(): ResponseInterface
+        + editAlatBerat(): ResponseInterface
+        + kelolaKuotasi(): ResponseInterface
+        + pengaturan(): ResponseInterface
+    }
+
+    class AlatBerat {
+        - $alatBeratModel: AlatBeratModel
+        + index(): ResponseInterface
+        + detail(): ResponseInterface
+        + mintaKuotasi(): ResponseInterface
+        + riwayatKuotasi(): ResponseInterface
+    }
+
+    class Profile {
+        + index(): ResponseInterface
+        + updateProfile(): ResponseInterface
+    }
+
+    class Sewa {
+        + index(): ResponseInterface
+        + process(): ResponseInterface
+    }
+}
+
+package "Models" {
+    class UserModel {
+        - $table: string = 'users'
+        - $primaryKey: string = 'id'
+        - $allowedFields: array
+        + find(): array
+        + save(): bool
+        + update(): bool
+        + delete(): bool
+    }
+
+    class AlatBeratModel {
+        - $table: string = 'alat_berat'
+        - $primaryKey: string = 'id'
+        - $allowedFields: array
+        - $validationRules: array
+        + find(): array
+        + save(): bool
+        + where(): AlatBeratModel
+        + like(): AlatBeratModel
+    }
+
+    class AlatBeratGambarModel {
+        - $table: string = 'alat_berat_gambar'
+        + getByAlatBerat(): array
+        + save(): bool
+        + delete(): bool
+    }
+
+    class RiwayatPenawaranModel {
+        - $table: string = 'riwayat_penawaran'
+        - $primaryKey: string = 'id'
+        - $allowedFields: array
+        + find(): array
+        + save(): bool
+        + update(): bool
+        + where(): RiwayatPenawaranModel
+    }
+
+    class NotifikasiModel {
+        - $table: string = 'notifikasi'
+        - $primaryKey: string = 'id'
+        + find(): array
+        + save(): bool
+        + update(): bool
+    }
+}
+
+database "Database" {
+    entity users {
+        * id: int (PK)
+        --
+        name: varchar(255)
+        email: varchar(255)
+        password: varchar(255)
+        role: enum('user', 'admin')
+        phone: varchar(20)
+        address: text
+        created_at: timestamp
+        updated_at: timestamp
+    }
+
+    entity alat_berat {
+        * id: int (PK)
+        --
+        nama: varchar(255)
+        jenis: varchar(100)
+        kapasitas: decimal(10,2)
+        status: enum('tersedia', 'dipinjam', 'rusak')
+        deskripsi: text
+        gambar: varchar(255)
+        harga_sewa: decimal(15,2)
+        merek: varchar(100)
+        created_at: timestamp
+        updated_at: timestamp
+    }
+
+    entity alat_berat_gambar {
+        * id: int (PK)
+        --
+        alat_berat_id: int (FK)
+        filename: varchar(255)
+        created_at: timestamp
+        updated_at: timestamp
+    }
+
+    entity riwayat_penawaran {
+        * id: int (PK)
+        --
+        user_id: int (FK)
+        nama_pengunjung: varchar(255)
+        email_pengunjung: varchar(255)
+        telepon_pengunjung: varchar(30)
+        alat_berat_id: int (FK)
+        status: enum('pending', 'diterima', 'ditolak')
+        harga_ditawarkan: decimal(15,2)
+        created_at: timestamp
+        updated_at: timestamp
+    }
+
+    entity notifikasi {
+        * id: int (PK)
+        --
+        user_id: int (FK)
+        pesan: text
+        link: varchar(255)
+        is_read: tinyint(1)
+        created_at: timestamp
+        updated_at: timestamp
+    }
+}
+
+' Inheritance
+BaseController <|-- Home
+BaseController <|-- Auth
+BaseController <|-- Admin
+BaseController <|-- AlatBerat
+BaseController <|-- Profile
+BaseController <|-- Sewa
+
+' Associations
+Home --> AlatBeratModel : uses
+Admin --> UserModel : manages
+Admin --> AlatBeratModel : manages
+Admin --> RiwayatPenawaranModel : manages
+AlatBerat --> AlatBeratModel : uses
+AlatBerat --> AlatBeratGambarModel : uses
+AlatBerat --> RiwayatPenawaranModel : uses
+Auth --> UserModel : authenticates
+
+' Database Relationships
+users ||--o{ riwayat_penawaran : "user_id"
+alat_berat ||--o{ alat_berat_gambar : "alat_berat_id"
+alat_berat ||--o{ riwayat_penawaran : "alat_berat_id"
+users ||--o{ notifikasi : "user_id"
+
+' Model to Database
+UserModel --> users : maps to
+AlatBeratModel --> alat_berat : maps to
+AlatBeratGambarModel --> alat_berat_gambar : maps to
+RiwayatPenawaranModel --> riwayat_penawaran : maps to
+NotifikasiModel --> notifikasi : maps to
+
+note right of BaseController
+  Abstract base class
+  Common functionality for all controllers
+end note
+
+note right of AlatBeratModel
+  Core model for equipment management
+  CRUD operations & validation
+end note
+
+note right of Admin
+  Administrative functions
+  User & equipment management
+end note
+
+@enduml 

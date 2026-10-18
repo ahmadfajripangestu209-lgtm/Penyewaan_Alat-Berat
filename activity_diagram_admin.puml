@@ -1,0 +1,202 @@
+@startuml Activity Diagram Admin
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam activity {
+    BackgroundColor #E8F4FD
+    BorderColor #2196F3
+    FontColor #000000
+}
+skinparam decision {
+    BackgroundColor #FFF3E0
+    BorderColor #FF9800
+    FontColor #000000
+}
+skinparam start {
+    BackgroundColor #4CAF50
+    BorderColor #4CAF50
+    FontColor #FFFFFF
+}
+skinparam stop {
+    BackgroundColor #F44336
+    BorderColor #F44336
+    FontColor #FFFFFF
+}
+
+title Activity Diagram - Admin System
+
+start
+
+:Admin Login;
+if (Login Berhasil?) then (Ya)
+    :Akses Dashboard Admin;
+    :Lihat Statistik;
+    note right
+        - Total User
+        - Total Alat Berat  
+        - Total Kuotasi
+    end note
+    
+    :Pilih Menu;
+    
+    if (Menu?) then (Manajemen User)
+        :Akses Halaman Users;
+        :Lihat Daftar User;
+        
+        if (Aksi?) then (Tambah User)
+            :Form Tambah User;
+            :Input Data User;
+            if (Validasi Berhasil?) then (Ya)
+                :Simpan User;
+                :Tampilkan Pesan Sukses;
+            else (Tidak)
+                :Tampilkan Error;
+                :Kembali ke Form;
+            endif
+        elseif (Edit User) then
+            :Form Edit User;
+            :Update Data User;
+            if (Validasi Berhasil?) then (Ya)
+                :Update User;
+                :Tampilkan Pesan Sukses;
+            else (Tidak)
+                :Tampilkan Error;
+                :Kembali ke Form;
+            endif
+        elseif (Hapus User) then
+            :Konfirmasi Hapus;
+            if (Konfirmasi?) then (Ya)
+                :Hapus User;
+                :Tampilkan Pesan Sukses;
+            else (Tidak)
+                :Batal Hapus;
+            endif
+        endif
+        
+    elseif (Manajemen Alat Berat) then
+        :Akses Halaman Alat Berat;
+        :Lihat Daftar Alat Berat;
+        
+        if (Aksi?) then (Tambah Alat Berat)
+            :Form Tambah Alat Berat;
+            :Input Data Alat Berat;
+            :Upload Gambar;
+            if (Validasi Berhasil?) then (Ya)
+                :Simpan Alat Berat;
+                :Tampilkan Pesan Sukses;
+            else (Tidak)
+                :Tampilkan Error;
+                :Kembali ke Form;
+            endif
+        elseif (Edit Alat Berat) then
+            :Form Edit Alat Berat;
+            :Update Data Alat Berat;
+            :Upload Gambar Baru (Opsional);
+            if (Validasi Berhasil?) then (Ya)
+                :Update Alat Berat;
+                :Tampilkan Pesan Sukses;
+            else (Tidak)
+                :Tampilkan Error;
+                :Kembali ke Form;
+            endif
+        elseif (Upload Gambar Multiple) then
+            :Upload Multiple Gambar;
+            :Simpan Gambar;
+            :Tampilkan Pesan Sukses;
+        elseif (Hapus Gambar) then
+            :Konfirmasi Hapus Gambar;
+            if (Konfirmasi?) then (Ya)
+                :Hapus File Gambar;
+                :Hapus Data Gambar;
+                :Tampilkan Pesan Sukses;
+            else (Tidak)
+                :Batal Hapus;
+            endif
+        elseif (Hapus Alat Berat) then
+            :Konfirmasi Hapus;
+            if (Konfirmasi?) then (Ya)
+                :Hapus File Gambar;
+                :Hapus Alat Berat;
+                :Tampilkan Pesan Sukses;
+            else (Tidak)
+                :Batal Hapus;
+            endif
+        elseif (Hapus Semua Alat Berat) then
+            :Konfirmasi Hapus Semua;
+            if (Konfirmasi?) then (Ya)
+                :Hapus Semua Data Alat Berat;
+                :Tampilkan Pesan Sukses;
+            else (Tidak)
+                :Batal Hapus;
+            endif
+        endif
+        
+    elseif (Kelola Kuotasi) then
+        :Akses Halaman Kelola Kuotasi;
+        :Lihat Daftar Permintaan Kuotasi;
+        
+        if (Aksi?) then (Update Status)
+            :Pilih Status Baru;
+            :Input Pesan Admin (Opsional);
+            :Update Status Kuotasi;
+            if (Ada User ID?) then (Ya)
+                :Buat Notifikasi;
+                :Kirim Notifikasi ke User;
+            endif
+            :Tampilkan Pesan Sukses;
+        elseif (Hapus Kuotasi) then
+            :Konfirmasi Hapus;
+            if (Konfirmasi?) then (Ya)
+                :Hapus Data Kuotasi;
+                :Tampilkan Pesan Sukses;
+            else (Tidak)
+                :Batal Hapus;
+            endif
+        elseif (Hapus Semua Kuotasi) then
+            :Konfirmasi Hapus Semua;
+            if (Konfirmasi?) then (Ya)
+                :Hapus Semua Data Kuotasi;
+                :Tampilkan Pesan Sukses;
+            else (Tidak)
+                :Batal Hapus;
+            endif
+        endif
+        
+    elseif (Pengaturan) then
+        :Akses Halaman Pengaturan;
+        :Lihat Konfigurasi Perusahaan;
+        
+        if (Aksi?) then (Update Hero Section)
+            :Form Update Hero;
+            :Input Data Hero;
+            :Update Konfigurasi;
+            :Tampilkan Pesan Sukses;
+        elseif (Upload Foto Profil) then
+            :Upload Foto Profil;
+            :Simpan File;
+            :Update Konfigurasi;
+            :Tampilkan Pesan Sukses;
+        elseif (Upload Foto Header) then
+            :Upload Foto Header;
+            :Simpan File;
+            :Update Konfigurasi;
+            :Tampilkan Pesan Sukses;
+        endif
+        
+    endif
+    
+    :Kembali ke Dashboard;
+    if (Logout?) then (Ya)
+        :Logout;
+        stop
+    else (Tidak)
+        :Lanjutkan ke Menu;
+    endif
+    
+else (Tidak)
+    :Tampilkan Error Login;
+    :Kembali ke Form Login;
+endif
+
+stop
+
+@enduml 
